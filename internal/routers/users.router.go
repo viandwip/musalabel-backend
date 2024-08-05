@@ -3,9 +3,9 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
-	"github.com/oktaviandwip/musalabel/internal/handlers"
-	"github.com/oktaviandwip/musalabel/internal/middleware"
-	"github.com/oktaviandwip/musalabel/internal/repository"
+	"github.com/oktaviandwip/musalabel-backend/internal/handlers"
+	"github.com/oktaviandwip/musalabel-backend/internal/middleware"
+	"github.com/oktaviandwip/musalabel-backend/internal/repository"
 )
 
 func users(g *gin.Engine, d *sqlx.DB) {
@@ -14,9 +14,8 @@ func users(g *gin.Engine, d *sqlx.DB) {
 	repo := repository.NewUser(d)
 	handler := handlers.NewUser(repo)
 
-	route.POST("/", handler.CreateNewUser)
-	route.PATCH("/profile/", middleware.Authjwt("admin", "user"), middleware.UploadFile, handler.PostProfile)
-	// route.GET("/profile/:id", middleware.Authjwt("admin", "user"), handler.GetProfile)
-	// route.GET("/profile/header/:id", middleware.Authjwt("user"), handler.GetProfileForHeader)
-
+	route.POST("/signup", handler.PostUser)
+	route.PATCH("/profile", middleware.UploadFile, handler.PatchProfile)
+	route.PATCH("/password", handler.PatchPassword)
+	route.PATCH("/phone-address", handler.PatchPhoneAddress)
 }

@@ -6,8 +6,8 @@ import (
 	"os"
 
 	_ "github.com/joho/godotenv/autoload"
-	"github.com/oktaviandwip/coffeeshop/internal/routers"
-	"github.com/oktaviandwip/coffeeshop/pkg"
+	"github.com/oktaviandwip/musalabel-backend/internal/routers"
+	"github.com/oktaviandwip/musalabel-backend/pkg"
 )
 
 func main() {

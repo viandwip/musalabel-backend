@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/oktaviandwip/musalabel/config"
-	"github.com/oktaviandwip/musalabel/pkg"
+	"github.com/oktaviandwip/musalabel-backend/config"
+	"github.com/oktaviandwip/musalabel-backend/pkg"
 )
 
 func Authjwt(role ...string) gin.HandlerFunc {

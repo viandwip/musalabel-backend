@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/oktaviandwip/musalabel/config"
+	"github.com/oktaviandwip/musalabel-backend/config"
 )
 
 type Response struct {

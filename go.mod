@@ -1,4 +1,4 @@
-module github.com/oktaviandwip/coffeeshop
+module github.com/oktaviandwip/musalabel-backend
 
 go 1.22.2
 
@@ -11,7 +11,13 @@ require (
 	golang.org/x/crypto v0.23.0
 )
 
-require github.com/kr/text v0.2.0 // indirect
+require (
+	github.com/kr/text v0.2.0 // indirect
+	github.com/midtrans/midtrans-go v1.3.8 // indirect
+	github.com/xendit/xendit-go v1.0.25 // indirect
+	github.com/xendit/xendit-go/v4 v4.3.0 // indirect
+	github.com/xendit/xendit-go/v5 v5.0.0 // indirect
+)
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2

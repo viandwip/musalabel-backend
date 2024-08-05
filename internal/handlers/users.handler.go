@@ -1,12 +1,14 @@
 package handlers
 
 import (
+	"fmt"
+
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
-	"github.com/oktaviandwip/musalabel/config"
-	models "github.com/oktaviandwip/musalabel/internal/models/users"
-	"github.com/oktaviandwip/musalabel/internal/repository"
-	"github.com/oktaviandwip/musalabel/pkg"
+	"github.com/oktaviandwip/musalabel-backend/config"
+	models "github.com/oktaviandwip/musalabel-backend/internal/models"
+	"github.com/oktaviandwip/musalabel-backend/internal/repository"
+	"github.com/oktaviandwip/musalabel-backend/pkg"
 )
 
 type HandlerUsers struct {
@@ -18,38 +20,44 @@ func NewUser(r repository.RepoUsersIF) *HandlerUsers {
 }
 
 // Create User
-func (h *HandlerUsers) CreateNewUser(ctx *gin.Context) {
+func (h *HandlerUsers) PostUser(ctx *gin.Context) {
 	var err error
 	user := models.User{
 		Role: "user",
 	}
 
 	if err := ctx.ShouldBind(&user); err != nil {
+		fmt.Println(err)
 		pkg.NewRes(400, &config.Result{
 			Data: err.Error(),
 		}).Send(ctx)
 		return
 	}
 
-	_, err = govalidator.ValidateStruct(&user)
-	if err != nil {
-		pkg.NewRes(401, &config.Result{
-			Data: err.Error(),
-		}).Send(ctx)
-		return
-	}
+	if !user.IsGoogle {
+		_, err = govalidator.ValidateStruct(&user)
+		if err != nil {
+			fmt.Println(err)
+			pkg.NewRes(400, &config.Result{
+				Data: err.Error(),
+			}).Send(ctx)
+			return
+		}
 
-	user.Password, err = pkg.HashPassword(user.Password)
-	if err != nil {
-		pkg.NewRes(401, &config.Result{
-			Data: err.Error(),
-		}).Send(ctx)
-		return
+		user.Password, err = pkg.HashPassword(user.Password)
+		if err != nil {
+			fmt.Println(err)
+			pkg.NewRes(401, &config.Result{
+				Data: err.Error(),
+			}).Send(ctx)
+			return
+		}
 	}
 
 	result, err := h.CreateUser(&user)
 	if err != nil {
-		pkg.NewRes(400, &config.Result{
+		fmt.Println(err)
+		pkg.NewRes(500, &config.Result{
 			Data: err.Error(),
 		}).Send(ctx)
 		return
@@ -59,21 +67,23 @@ func (h *HandlerUsers) CreateNewUser(ctx *gin.Context) {
 }
 
 // Update Profile
-func (h *HandlerUsers) PostProfile(ctx *gin.Context) {
+func (h *HandlerUsers) PatchProfile(ctx *gin.Context) {
 	var err error
 	user := models.User{}
 
 	if err := ctx.ShouldBind(&user); err != nil {
+		fmt.Println(err)
 		pkg.NewRes(400, &config.Result{
 			Data: err.Error(),
 		}).Send(ctx)
 		return
 	}
 
-	user.Image = ctx.MustGet("profileImage").(string)
+	user.Image = ctx.MustGet("image").(string)
 	result, err := h.UpdateProfile(&user)
 	if err != nil {
-		pkg.NewRes(400, &config.Result{
+		fmt.Println(err)
+		pkg.NewRes(404, &config.Result{
 			Data: err.Error(),
 		}).Send(ctx)
 		return
@@ -82,34 +92,60 @@ func (h *HandlerUsers) PostProfile(ctx *gin.Context) {
 	pkg.NewRes(200, result).Send(ctx)
 }
 
-// // Get Profile for header
-// func (h *HandlerUsers) GetProfileForHeader(ctx *gin.Context) {
+// Update Password
+func (h *HandlerUsers) PatchPassword(ctx *gin.Context) {
+	var err error
+	user := models.User{}
 
-// 	id := ctx.Param("id")
+	if err := ctx.ShouldBind(&user); err != nil {
+		fmt.Println(err)
+		pkg.NewRes(400, &config.Result{
+			Data: err.Error(),
+		}).Send(ctx)
+		return
+	}
 
-// 	result, err := h.FetchProfileForHeader(id)
-// 	if err != nil {
-// 		pkg.NewRes(400, &config.Result{
-// 			Data: err.Error(),
-// 		}).Send(ctx)
-// 		return
-// 	}
+	user.Password, err = pkg.HashPassword(user.Password)
+	if err != nil {
+		fmt.Println(err)
+		pkg.NewRes(401, &config.Result{
+			Data: err.Error(),
+		}).Send(ctx)
+		return
+	}
 
-// 	pkg.NewRes(200, result).Send(ctx)
-// }
+	result, err := h.UpdatePassword(&user)
+	if err != nil {
+		fmt.Println(err)
+		pkg.NewRes(404, &config.Result{
+			Data: err.Error(),
+		}).Send(ctx)
+		return
+	}
 
-// // Get Profile
-// func (h *HandlerUsers) GetProfile(ctx *gin.Context) {
+	pkg.NewRes(200, result).Send(ctx)
+}
 
-// 	id := ctx.Param("id")
+// Update Address
+func (h *HandlerUsers) PatchPhoneAddress(ctx *gin.Context) {
+	user := models.User{}
 
-// 	result, err := h.FetchProfile(id)
-// 	if err != nil {
-// 		pkg.NewRes(400, &config.Result{
-// 			Data: err.Error(),
-// 		}).Send(ctx)
-// 		return
-// 	}
+	if err := ctx.ShouldBind(&user); err != nil {
+		fmt.Println(err)
+		pkg.NewRes(400, &config.Result{
+			Data: err.Error(),
+		}).Send(ctx)
+		return
+	}
 
-// 	pkg.NewRes(200, result).Send(ctx)
-// }
+	result, err := h.UpdatePhoneAddress(&user)
+	if err != nil {
+		fmt.Println(err)
+		pkg.NewRes(404, &config.Result{
+			Data: err.Error(),
+		}).Send(ctx)
+		return
+	}
+
+	pkg.NewRes(200, result).Send(ctx)
+}

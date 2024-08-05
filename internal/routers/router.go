@@ -25,8 +25,10 @@ func New(db *sqlx.DB) *gin.Engine {
 	// Apply the CORS middleware to the router
 	router.Use(cors.New(corsConfig))
 
+	products(router, db)
 	users(router, db)
 	auth(router, db)
+	orders(router, db)
 
 	return router
 }
