@@ -9,7 +9,7 @@ COPY . .
 # download depedency
 RUN go mod download
 # build file golang
-RUN  go build -v -o /goapp/coffeecollab ./cmd/main.go
+RUN  go build -v -o /goapp/musalabel ./cmd/main.go
 
 FROM alpine:3.14
 
@@ -22,4 +22,4 @@ ENV PATH="/app:${PATH}"
 
 EXPOSE 9090
 
-ENTRYPOINT [ "coffeecollab" ]
+ENTRYPOINT [ "musalabel" ]
