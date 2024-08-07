@@ -54,7 +54,7 @@ func (h *HandlerAuth) Login(ctx *gin.Context) {
 
 		if passwordErr != nil {
 			pkg.NewRes(401, &config.Result{
-				Data: "Password incorrect",
+				Data: "Password salah!",
 			}).Send(ctx)
 			return
 		}
