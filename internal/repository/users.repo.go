@@ -46,7 +46,7 @@ func (r *RepoUsers) CreateUser(data *models.User) (*config.Result, error) {
 	_, err := r.NamedExec(q, data)
 	if err != nil {
 		if strings.Contains(err.Error(), "users_email_key") {
-			return nil, errors.New("email has been used")
+			return nil, errors.New("email sudah digunakan")
 		}
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (r *RepoUsers) GetPassByEmail(email string) (*models.User, error) {
 
 	if err := r.Get(&result, q, email); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errors.New("email not found")
+			return nil, errors.New("email belum terdaftar")
 		}
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func (r *RepoUsers) UpdateProfile(data *models.User) (*config.Result, error) {
 	err := r.QueryRowx(q, args...).StructScan(&user)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errors.New("user not found")
+			return nil, errors.New("user tidak ditemukan")
 		}
 		return nil, err
 	}
@@ -133,7 +133,7 @@ func (r *RepoUsers) UpdatePassword(data *models.User) (*config.Result, error) {
 		return nil, err
 	}
 
-	return &config.Result{Message: "Password updated"}, nil
+	return &config.Result{Message: "Password berhasil di-update!"}, nil
 }
 
 // Update Address
@@ -155,5 +155,5 @@ func (r *RepoUsers) UpdatePhoneAddress(data *models.User) (*config.Result, error
 		return nil, err
 	}
 
-	return &config.Result{Message: "Address updated"}, nil
+	return &config.Result{Message: "Alamat berhasil di-update!"}, nil
 }
