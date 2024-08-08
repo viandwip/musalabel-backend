@@ -66,9 +66,10 @@ func (h *HandlerProducts) GetProducts(ctx *gin.Context) {
 
 // Get Product
 func (h *HandlerProducts) GetProduct(ctx *gin.Context) {
+	id := ctx.Param("id")
 	slug := ctx.Param("slug")
 
-	result, err := h.FetchProduct(slug)
+	result, err := h.FetchProduct(id, slug)
 	if err != nil {
 		fmt.Println(err)
 		pkg.NewRes(500, &config.Result{

@@ -13,7 +13,7 @@ type RepoProductsIF interface {
 	CreateProduct(data *models.Product) (*config.Result, error)
 	FetchProducts(page, limit int) (*config.Result, error)
 	SearchProducts(search string, page, limit int) (*config.Result, error)
-	FetchProduct(slug string) (*config.Result, error)
+	FetchProduct(id, slug string) (*config.Result, error)
 	UpdateProduct(data *models.Product) (*config.Result, error)
 	RemoveProduct(id string) (*config.Result, error)
 }
@@ -104,12 +104,18 @@ func (r *RepoProducts) SearchProducts(search string, page, limit int) (*config.R
 }
 
 // Get Product
-func (r *RepoProducts) FetchProduct(slug string) (*config.Result, error) {
+func (r *RepoProducts) FetchProduct(id, slug string) (*config.Result, error) {
 	var result models.Product
+	data := id
+	column := "id"
+	if id == "" {
+		data = slug
+		column = "slug"
+	}
 
-	q := "SELECT * FROM products WHERE slug = $1"
+	q := fmt.Sprintf("SELECT * FROM products WHERE %s = $1", column)
 
-	if err := r.Get(&result, r.Rebind(q), slug); err != nil {
+	if err := r.Get(&result, r.Rebind(q), data); err != nil {
 		return nil, err
 	}
 
