@@ -112,6 +112,7 @@ func (r *RepoProducts) FetchProduct(id, slug string) (*config.Result, error) {
 		data = slug
 		column = "slug"
 	}
+	fmt.Println(data, column)
 
 	q := fmt.Sprintf("SELECT * FROM products WHERE %s = $1", column)
 
