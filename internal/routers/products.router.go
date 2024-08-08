@@ -16,6 +16,7 @@ func products(g *gin.Engine, d *sqlx.DB) {
 
 	route.GET("/", handler.GetProducts)
 	route.GET("/:slug", handler.GetProduct)
+	route.GET("/details/:id", handler.GetProduct)
 	route.POST("/", middleware.UploadFile, handler.PostProduct)
 	route.PATCH("/:id", middleware.UploadFile, handler.PatchProduct)
 	route.DELETE("/:id", handler.DeleteProduct)
