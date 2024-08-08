@@ -106,12 +106,10 @@ func (r *RepoProducts) SearchProducts(search string, page, limit int) (*config.R
 // Get Product
 func (r *RepoProducts) FetchProduct(slug string) (*config.Result, error) {
 	var result models.Product
-	data := fmt.Sprintf("%%%s%%", slug)
-	fmt.Println(data)
 
-	q := "SELECT * FROM products WHERE slug ILIKE $1"
+	q := "SELECT * FROM products WHERE slug = $1"
 
-	if err := r.Get(&result, r.Rebind(q), data); err != nil {
+	if err := r.Get(&result, r.Rebind(q), slug); err != nil {
 		return nil, err
 	}
 
