@@ -31,7 +31,7 @@ func (r *RepoProducts) FetchProducts(page, limit int) (*config.Result, error) {
 	offset := (page - 1) * limit
 	var result []models.Product
 
-	q := `SELECT * FROM products ORDER BY created_at DESC LIMIT $1 OFFSET $2`
+	q := `SELECT * FROM products ORDER BY updated_at DESC, created_at DESC LIMIT $1 OFFSET $2`
 
 	if err := r.Select(&result, r.Rebind(q), limit, offset); err != nil {
 		return nil, err
