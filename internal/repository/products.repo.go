@@ -12,7 +12,8 @@ import (
 type RepoProductsIF interface {
 	CreateProduct(data *models.Product) (*config.Result, error)
 	FetchProducts(page, limit int) (*config.Result, error)
-	FetchProduct(id, slug string) (*config.Result, error)
+	SearchProducts(search string, page, limit int) (*config.Result, error)
+	FetchProduct(slug string) (*config.Result, error)
 	UpdateProduct(data *models.Product) (*config.Result, error)
 	RemoveProduct(id string) (*config.Result, error)
 }
@@ -63,18 +64,52 @@ func (r *RepoProducts) FetchProducts(page, limit int) (*config.Result, error) {
 	return &config.Result{Data: result, Meta: meta}, nil
 }
 
-// Get Product
-func (r *RepoProducts) FetchProduct(id, slug string) (*config.Result, error) {
-	var result models.Product
-	column := "id"
-	data := id
+// Search Products
+func (r *RepoProducts) SearchProducts(search string, page, limit int) (*config.Result, error) {
+	searchStr := fmt.Sprintf("%%%s%%", search)
+	offset := (page - 1) * limit
+	var result []models.Product
 
-	if id == "" {
-		column = "slug"
-		data = slug
+	q := `SELECT * FROM products WHERE name ILIKE $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3`
+
+	if err := r.Select(&result, r.Rebind(q), searchStr, limit, offset); err != nil {
+		return nil, err
 	}
 
-	q := fmt.Sprintf("SELECT * FROM products WHERE %s = $1", column)
+	// Pagination
+	var totalCount int
+
+	totalCountQuery := `SELECT COUNT(*) FROM products WHERE name ILIKE $1`
+
+	if err := r.Get(&totalCount, totalCountQuery, searchStr); err != nil {
+		return nil, err
+	}
+
+	totalPages := int(math.Ceil(float64(totalCount) / float64(limit)))
+	var next, prev interface{}
+	if page < totalPages {
+		next = page + 1
+	}
+	if page > 1 {
+		prev = page - 1
+	}
+
+	meta := &config.Metas{
+		Total: totalCount,
+		Next:  next,
+		Prev:  prev,
+	}
+
+	return &config.Result{Data: result, Meta: meta}, nil
+}
+
+// Get Product
+func (r *RepoProducts) FetchProduct(slug string) (*config.Result, error) {
+	var result models.Product
+	data := fmt.Sprintf("%%%s%%", slug)
+	fmt.Println(data)
+
+	q := "SELECT * FROM products WHERE slug ILIKE $1"
 
 	if err := r.Get(&result, r.Rebind(q), data); err != nil {
 		return nil, err

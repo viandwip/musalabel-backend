@@ -21,6 +21,8 @@ func NewProduct(r repository.RepoProductsIF) *HandlerProducts {
 
 // Get All Products
 func (h *HandlerProducts) GetProducts(ctx *gin.Context) {
+	search := ctx.Query("search")
+
 	page, err := strconv.Atoi(ctx.Query("page"))
 	if err != nil {
 		fmt.Println(err)
@@ -39,24 +41,34 @@ func (h *HandlerProducts) GetProducts(ctx *gin.Context) {
 		return
 	}
 
-	result, err := h.FetchProducts(page, limit)
-	if err != nil {
-		fmt.Println(err)
-		pkg.NewRes(500, &config.Result{
-			Data: err.Error(),
-		}).Send(ctx)
-		return
+	if search == "" {
+		result, err := h.FetchProducts(page, limit)
+		if err != nil {
+			fmt.Println(err)
+			pkg.NewRes(500, &config.Result{
+				Data: err.Error(),
+			}).Send(ctx)
+			return
+		}
+		pkg.NewRes(201, result).Send(ctx)
+	} else {
+		result, err := h.SearchProducts(search, page, limit)
+		if err != nil {
+			fmt.Println(err)
+			pkg.NewRes(500, &config.Result{
+				Data: err.Error(),
+			}).Send(ctx)
+			return
+		}
+		pkg.NewRes(201, result).Send(ctx)
 	}
-
-	pkg.NewRes(201, result).Send(ctx)
 }
 
 // Get Product
 func (h *HandlerProducts) GetProduct(ctx *gin.Context) {
-	id := ctx.Param("id")
 	slug := ctx.Param("slug")
 
-	result, err := h.FetchProduct(id, slug)
+	result, err := h.FetchProduct(slug)
 	if err != nil {
 		fmt.Println(err)
 		pkg.NewRes(500, &config.Result{
