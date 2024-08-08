@@ -109,9 +109,9 @@ func (h *HandlerProducts) PostProduct(ctx *gin.Context) {
 
 // Update Product
 func (h *HandlerProducts) PatchProduct(ctx *gin.Context) {
-	slug := ctx.Param("slug")
+	id := ctx.Param("id")
 	product := models.Product{
-		Slug: slug,
+		Id: id,
 	}
 
 	if err := ctx.ShouldBind(&product); err != nil {

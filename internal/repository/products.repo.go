@@ -154,10 +154,11 @@ func (r *RepoProducts) UpdateProduct(data *models.Product) (*config.Result, erro
 					description = COALESCE(NULLIF(:description, ''), description),
 					stock = COALESCE(CAST(NULLIF(:stock, '') AS INT), stock),
 					price = COALESCE(CAST(NULLIF(:price, '') AS INT), price),
+					slug = COALESCE(NULLIF(:slug, ''), slug),
 					size = COALESCE(NULLIF(:size, ''), size),
 					updated_at = NOW()		
 				WHERE
-					slug = :slug
+					id = CAST(:id AS UUID)
 			`
 
 	_, err := r.NamedExec(q, data)
