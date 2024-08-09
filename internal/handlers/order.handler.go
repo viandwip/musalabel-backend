@@ -187,7 +187,7 @@ func (h *HandlerOrders) PostPurchase(ctx *gin.Context) {
 }
 
 // Purchase Webhook
-func (h *HandlerOrders) GetPaymentWebhook(ctx *gin.Context) {
+func (h *HandlerOrders) PostPaymentWebhook(ctx *gin.Context) {
 	var notification map[string]interface{}
 	if err := ctx.BindJSON(&notification); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
