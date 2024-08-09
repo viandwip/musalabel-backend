@@ -18,7 +18,7 @@ func orders(g *gin.Engine, d *sqlx.DB) {
 	route.PATCH("/", handler.PatchOrder)
 	route.DELETE("/", handler.DeleteOrder)
 	route.POST("/payment", handler.PostPayment)
-	route.GET("/payment-webhook", handler.PostPaymentWebhook)
+	route.GET("/payment-webhook", handler.GetPaymentWebhook)
 	route.POST("/purchase", handler.PostPurchase)
 	route.GET("/purchase", handler.GetPurchases)
 	route.GET("/purchase-count", handler.GetPurchasesCount)
