@@ -57,3 +57,8 @@ type Payment struct {
 	SuccessRedirectURL string
 	FailureRedirectURL string
 }
+
+type Dashboard struct {
+	interval string
+	data string
+}
