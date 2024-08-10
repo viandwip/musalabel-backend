@@ -127,7 +127,7 @@ func (h *HandlerUsers) PatchPassword(ctx *gin.Context) {
 }
 
 // Update Address
-func (h *HandlerUsers) PatchPhoneAddress(ctx *gin.Context) {
+func (h *HandlerUsers) PatchCheckoutUser(ctx *gin.Context) {
 	user := models.User{}
 
 	if err := ctx.ShouldBind(&user); err != nil {
@@ -138,7 +138,7 @@ func (h *HandlerUsers) PatchPhoneAddress(ctx *gin.Context) {
 		return
 	}
 
-	result, err := h.UpdatePhoneAddress(&user)
+	result, err := h.UpdateCheckoutUser(&user)
 	if err != nil {
 		fmt.Println(err)
 		pkg.NewRes(404, &config.Result{

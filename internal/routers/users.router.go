@@ -17,5 +17,5 @@ func users(g *gin.Engine, d *sqlx.DB) {
 	route.POST("/signup", handler.PostUser)
 	route.PATCH("/profile", middleware.UploadFile, handler.PatchProfile)
 	route.PATCH("/password", handler.PatchPassword)
-	route.PATCH("/phone-address", handler.PatchPhoneAddress)
+	route.PATCH("/checkout-user", handler.PatchCheckoutUser)
 }

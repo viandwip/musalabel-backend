@@ -15,7 +15,7 @@ type RepoUsersIF interface {
 	GetPassByEmail(email string) (*models.User, error)
 	UpdateProfile(user *models.User) (*config.Result, error)
 	UpdatePassword(user *models.User) (*config.Result, error)
-	UpdatePhoneAddress(user *models.User) (*config.Result, error)
+	UpdateCheckoutUser(user *models.User) (*config.Result, error)
 }
 
 type RepoUsers struct {
@@ -137,10 +137,11 @@ func (r *RepoUsers) UpdatePassword(data *models.User) (*config.Result, error) {
 }
 
 // Update Address
-func (r *RepoUsers) UpdatePhoneAddress(data *models.User) (*config.Result, error) {
+func (r *RepoUsers) UpdateCheckoutUser(data *models.User) (*config.Result, error) {
 	q := `
 		UPDATE users
 		SET
+			full_name = COALESCE(NULLIF(:full_name, ''), full_name),
 			phone_number = COALESCE(NULLIF(:phone_number, ''), phone_number),
 			address1 = COALESCE(NULLIF(:address1, ''), address1),
 			address2 = COALESCE(NULLIF(:address2, ''), address2),
