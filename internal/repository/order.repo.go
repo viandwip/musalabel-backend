@@ -448,6 +448,7 @@ func (r *RepoOrders) FetchQuantity(interval string) (*config.Result, error) {
 		JOIN products p ON o.product_id = p.id
 		WHERE purchased_at BETWEEN CURRENT_DATE - INTERVAL '1 %s' AND CURRENT_DATE
 		GROUP BY name
+		ORDER BY SUM(quantity)
 	`, interval)
 
 	rows, err := r.Query(qString)
